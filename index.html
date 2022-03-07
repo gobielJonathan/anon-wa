@@ -39,6 +39,10 @@
                 val = '+62' + val.slice(1)
             }
 
+            if(!val.startsWith("+62")){
+                val = '+62' + val
+            }
+
             location.assign(`https://api.whatsapp.com/send/?phone=${val}&text&app_absent=0`)
         })
     </script>
