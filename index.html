@@ -12,15 +12,28 @@
 <body>
     <div class="container mt-5">
         <div class="input-group mb-3">
-            <span class="input-group-text">+62</span>
+            <span class="input-group-text">
+                <select class="form-select border-0 bg-transparent" id="phone" aria-label="Default select example">
+                </select>
+            </span>
             <input type="tel" class="form-control" placeholder="WA Number" aria-label=""
                 id="number">
+                <span class="input-group-text" id="chat">Chat</span>
             <span class="input-group-text" id="paste">Paste</span>
-            <span class="input-group-text" id="chat">Chat</span>
         </div>
     </div>
 
     <script>
+        fetch('https://gist.githubusercontent.com/anubhavshrimal/75f6183458db8c453306f93521e93d37/raw/f77e7598a8503f1f70528ae1cbf9f66755698a16/CountryCodes.json')
+        .then(res => res.json())
+        .then(res => {
+            const phones = res?.map(data => `
+                <option value="${data.dial_code}">${data.dial_code}</option>
+            `).join('')
+            document.getElementById("phone").innerHTML = phones
+            document.getElementById("phone").value = "+62"
+        })
+
         document.getElementById("paste").addEventListener("click", () => {
             navigator.clipboard
                 .readText()
@@ -33,15 +46,14 @@
         })
 
         document.getElementById("chat").addEventListener("click", () => {
-            let val =  document.getElementById("number").value
+            let phone =  document.getElementById("number").value
 
-            if(val.startsWith("0")){
-                val = '+62' + val.slice(1)
+            if(phone.startsWith("0")){
+                phone = phone.slice(1)
             }
-
-            if(!val.startsWith("+62")){
-                val = '+62' + val
-            }
+        
+            let extension = document.getElementById("phone").value
+            let val = extension + phone
 
             location.assign(`https://api.whatsapp.com/send/?phone=${val}&text&app_absent=0`)
         })
